@@ -21,13 +21,12 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e
 </style>
 </head>
 <body>
-
 <div id="game-container">
 <div id="progress-container">
 <div id="progress-bar">Симпатия: 50%</div>
 </div>
 <div id="status-bar">
-<span id="location-display">📍 Локация: Park</span>
+<span id="location-display">📍 Локация: Парк</span>
 </div>
 <div id="main-layout">
 <div id="left-column">
@@ -42,12 +41,12 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e
 </div>
 </div>
 </div>
-
 <script src="script.js"></script>
 <script>
 let simPercent = 50;
 let currentIndex = 0; 
 let isAlisaTurn = false;
+let isGameOver = false;
 
 const imgElement = document.getElementById('game-image');
 const videoElement = document.getElementById('game-video');
@@ -66,7 +65,7 @@ videoElement.onended = () => { if (callback) callback(); };
 }
 
 function updateMedia() {
-if (simPercent <= 35) {
+if (simPercent <= 35 || isGameOver) {
 playVideo("Refusal.mp4", () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
 return;
 }
@@ -74,15 +73,14 @@ playVideo(getEmotionVideo(simPercent, 1));
 }
 
 function renderStep() {
+if (isGameOver) return;
 let displayPercentage = Math.max(0, Math.min(100, simPercent));
 progressBar.style.width = displayPercentage + '%';
 progressBar.innerText = `Симпатия: ${displayPercentage}%`;
-
 optionsElement.innerHTML = "";
 
-// Финал первой части наступает строго после завершения 5-го раунда (индекс 5)
 if (currentIndex === 5) {
-if (simPercent >= 65) {
+if (simPercent >= 75) {
 textElement.innerHTML = "<strong>Успех знакомства!</strong> Алиса соглашается пойти с вами на ужин. Конец первой части квеста.";
 playVideo("Agreement.mp4");
 } else {
@@ -103,6 +101,13 @@ button.onclick = () => {
 simPercent += opt.points;
 textElement.innerHTML = opt.reply;
 
+if (opt.reply.includes("Game Over")) {
+isGameOver = true;
+updateMedia();
+optionsElement.innerHTML = "";
+return;
+}
+
 isAlisaTurn = !isAlisaTurn;
 if (!isAlisaTurn) currentIndex++; 
 
@@ -115,6 +120,7 @@ optionsElement.appendChild(button);
 }
 
 function triggerGameOver(msg) {
+isGameOver = true;
 optionsElement.innerHTML = "";
 textElement.innerHTML = `<strong>Конец игры:</strong> ${msg}`;
 let btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = "Заново";
