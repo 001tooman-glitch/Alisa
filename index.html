@@ -47,6 +47,7 @@ let simPercent = 50;
 let currentIndex = 0; 
 let isAlisaTurn = false;
 let isGameOver = false;
+let episode = 1;
 
 const imgElement = document.getElementById('game-image');
 const videoElement = document.getElementById('game-video');
@@ -66,12 +67,12 @@ videoElement.onended = () => { if (callback) callback(); };
 
 function updateMedia() {
 if (simPercent <= 35 || isGameOver) {
-playVideo("Refusal.mp4", () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
+let loseVid = (episode === 1) ? "Refusal.mp4" : "Refusal 2.mp4";
+playVideo(loseVid, () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
 return;
 }
-playVideo(getEmotionVideo(simPercent, 1));
+playVideo(getEmotionVideo(simPercent, episode));
 }
-
 function renderStep() {
 if (isGameOver) return;
 let displayPercentage = Math.max(0, Math.min(100, simPercent));
@@ -79,17 +80,29 @@ progressBar.style.width = displayPercentage + '%';
 progressBar.innerText = `Симпатия: ${displayPercentage}%`;
 optionsElement.innerHTML = "";
 
-if (currentIndex === 5) {
-if (simPercent >= 75) {
-textElement.innerHTML = "<strong>Успех знакомства!</strong> Алиса соглашается пойти с вами на ужин. Конец первой части квеста.";
-playVideo("Agreement.mp4");
-} else {
-triggerGameOver("Симпатии недостаточно для продолжения свидания.");
-}
+if (currentIndex === 8) {
+handleFinalEvaluation();
 return;
 }
 
 let currentStep = scriptData[currentIndex];
+
+if (currentIndex === 5 && episode === 1) {
+if (simPercent >= 65) {
+episode = 2;
+locationElement.innerText = `📍 Локация: ${currentStep.location}`;
+imgElement.src = currentStep.image;
+imgElement.style.display = 'block';
+videoElement.style.display = 'none';
+textElement.innerHTML = "Вы успешно переместились в вечерний ресторан. Атмосфера стала интимнее. Алекс заказывает напитки...";
+playVideo("Agreement.mp4", () => { renderStep(); });
+return;
+} else {
+triggerGameOver("Алиса отказалась идти с вами в ресторан из-за низкого уровня симпатии.");
+return;
+}
+}
+
 let activeSide = isAlisaTurn ? currentStep.alisa : currentStep.alex;
 textElement.innerHTML = activeSide.text;
 
@@ -117,6 +130,19 @@ setTimeout(renderStep, 4000);
 };
 optionsElement.appendChild(button);
 });
+}
+
+function handleFinalEvaluation() {
+if (simPercent >= 100) {
+textElement.innerHTML = "<strong>Супер-Победа!</strong> Алиса полностью доверяет вам и соглашается продолжить вечер у вас дома.";
+playVideo("Agreement 2.mp4", () => { playVideo("final.mp4"); });
+} else if (simPercent >= 75) {
+textElement.innerHTML = "<strong>Пауза.</strong> Вы отлично провели время. Алиса соглашается на второе свидание, но сегодня едет к себе.";
+playVideo("Interest 2.mp4");
+} else {
+textElement.innerHTML = "<strong>Отказ.</strong> Квест провален. Вы не смогли её заинтриговать.";
+playVideo("Refusal 2.mp4");
+}
 }
 
 function triggerGameOver(msg) {
