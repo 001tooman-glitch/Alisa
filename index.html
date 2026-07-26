@@ -31,7 +31,7 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e
 <div id="main-layout">
 <div id="left-column">
 <div id="media-box">
-<img id="game-image" src="image 1.jpg" alt="Алиса">
+<img id="game-image" src="image_1.jpg" alt="Алиса">
 <video id="game-video" style="display:none;"></video>
 </div>
 </div>
@@ -57,100 +57,101 @@ const locationElement = document.getElementById('location-display');
 const progressBar = document.getElementById('progress-bar');
 
 function playVideo(videoName, callback = null) {
-imgElement.style.display = 'none';
-videoElement.style.display = 'block';
-videoElement.src = videoName;
-videoElement.loop = false;
-videoElement.play().catch(e => console.log("Ожидание клика"));
-videoElement.onended = () => { if (callback) callback(); };
+    let cleanName = videoName.replace(/ /g, "_"); // Авто-замена пробелов на подчеркивания
+    imgElement.style.display = 'none';
+    videoElement.style.display = 'block';
+    videoElement.src = cleanName;
+    videoElement.loop = false;
+    videoElement.play().catch(e => console.log("Ожидание клика"));
+    videoElement.onended = () => { if (callback) callback(); };
 }
 
 function updateMedia() {
-if (simPercent <= 35 || isGameOver) {
-let loseVid = (episode === 1) ? "Refusal.mp4" : "Refusal 2.mp4";
-playVideo(loseVid, () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
-return;
+    if (simPercent <= 35 || isGameOver) {
+        let loseVid = (episode === 1) ? "Refusal.mp4" : "Refusal_2.mp4";
+        playVideo(loseVid, () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
+        return;
+    }
+    playVideo(getEmotionVideo(simPercent, episode));
 }
-playVideo(getEmotionVideo(simPercent, episode));
-}
+
 function renderStep() {
-if (isGameOver) return;
-let displayPercentage = Math.max(0, Math.min(100, simPercent));
-progressBar.style.width = displayPercentage + '%';
-progressBar.innerText = `Симпатия: ${displayPercentage}%`;
-optionsElement.innerHTML = "";
+    if (isGameOver) return;
+    let displayPercentage = Math.max(0, Math.min(100, simPercent));
+    progressBar.style.width = displayPercentage + '%';
+    progressBar.innerText = `Симпатия: ${displayPercentage}%`;
+    optionsElement.innerHTML = "";
 
-if (currentIndex === 8) {
-handleFinalEvaluation();
-return;
-}
+    if (currentIndex === 5) {
+        handleFinalEvaluation();
+        return;
+    }
 
-let currentStep = scriptData[currentIndex];
+    let currentStep = scriptData[currentIndex];
 
-if (currentIndex === 5 && episode === 1) {
-if (simPercent >= 65) {
-episode = 2;
-locationElement.innerText = `📍 Локация: ${currentStep.location}`;
-imgElement.src = currentStep.image;
-imgElement.style.display = 'block';
-videoElement.style.display = 'none';
-textElement.innerHTML = "Вы успешно переместились в вечерний ресторан. Атмосфера стала интимнее. Алекс заказывает напитки...";
-playVideo("Agreement.mp4", () => { renderStep(); });
-return;
-} else {
-triggerGameOver("Алиса отказалась идти с вами в ресторан из-за низкого уровня симпатии.");
-return;
-}
-}
+    if (currentIndex === 4 && episode === 1 && isAlisaTurn) {
+        if (simPercent >= 65) {
+            episode = 2;
+            locationElement.innerText = "📍 Локация: Уютное кафе";
+            textElement.innerHTML = "Вы успешно переместились в вечерний ресторан. Обстановка стала интимнее. Алекс заказывает напитки...";
+            playVideo("Agreement.mp4", () => { 
+                imgElement.src = "image_2.jpg";
+                imgElement.style.display = 'block';
+                videoElement.style.display = 'none';
+                renderStep(); 
+            });
+            return;
+        }
+    }
 
-let activeSide = isAlisaTurn ? currentStep.alisa : currentStep.alex;
-textElement.innerHTML = activeSide.text;
+    let activeSide = isAlisaTurn ? currentStep.alisa : currentStep.alex;
+    textElement.innerHTML = activeSide.text;
 
-activeSide.options.forEach(opt => {
-let button = document.createElement('button');
-button.className = 'btn';
-button.innerHTML = opt.text;
-button.onclick = () => {
-simPercent += opt.points;
-textElement.innerHTML = opt.reply;
+    activeSide.options.forEach(opt => {
+        let button = document.createElement('button');
+        button.className = 'btn';
+        button.innerHTML = opt.text;
+        button.onclick = () => {
+            simPercent += opt.points;
+            textElement.innerHTML = opt.reply;
 
-if (opt.reply.includes("Game Over")) {
-isGameOver = true;
-updateMedia();
-optionsElement.innerHTML = "";
-return;
-}
+            if (opt.reply.includes("Game Over")) {
+                isGameOver = true;
+                updateMedia();
+                optionsElement.innerHTML = "";
+                return;
+            }
 
-isAlisaTurn = !isAlisaTurn;
-if (!isAlisaTurn) currentIndex++; 
+            isAlisaTurn = !isAlisaTurn;
+            if (!isAlisaTurn) currentIndex++; 
 
-updateMedia();
-optionsElement.innerHTML = ""; 
-setTimeout(renderStep, 4000);
-};
-optionsElement.appendChild(button);
-});
+            updateMedia();
+            optionsElement.innerHTML = ""; 
+            setTimeout(renderStep, 4000);
+        };
+        optionsElement.appendChild(button);
+    });
 }
 
 function handleFinalEvaluation() {
-if (simPercent >= 100) {
-textElement.innerHTML = "<strong>Супер-Победа!</strong> Алиса полностью доверяет вам и соглашается продолжить вечер у вас дома.";
-playVideo("Agreement 2.mp4", () => { playVideo("final.mp4"); });
-} else if (simPercent >= 75) {
-textElement.innerHTML = "<strong>Пауза.</strong> Вы отлично провели время. Алиса соглашается на второе свидание, но сегодня едет к себе.";
-playVideo("Interest 2.mp4");
-} else {
-textElement.innerHTML = "<strong>Отказ.</strong> Квест провален. Вы не смогли её заинтриговать.";
-playVideo("Refusal 2.mp4");
-}
+    if (simPercent >= 100) {
+        textElement.innerHTML = "<strong>Супер-Победа!</strong> Алиса полностью доверяет вам и соглашается продолжить вечер у вас дома.";
+        playVideo("Agreement_2.mp4", () => { playVideo("final.mp4"); });
+    } else if (simPercent >= 75) {
+        textElement.innerHTML = "<strong>Пауза.</strong> Вы отлично провели время. Алиса соглашается на второе свидание, но сегодня едет к себе.";
+        playVideo("Interest_2.mp4");
+    } else {
+        textElement.innerHTML = "<strong>Отказ.</strong> Квест провален.";
+        playVideo("Refusal_2.mp4");
+    }
 }
 
 function triggerGameOver(msg) {
-isGameOver = true;
-optionsElement.innerHTML = "";
-textElement.innerHTML = `<strong>Конец игры:</strong> ${msg}`;
-let btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = "Заново";
-btn.onclick = () => { location.reload(); }; optionsElement.appendChild(btn);
+    isGameOver = true;
+    optionsElement.innerHTML = "";
+    textElement.innerHTML = `<strong>Конец игры:</strong> ${msg}`;
+    let btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = "Заново";
+    btn.onclick = () => { location.reload(); }; optionsElement.appendChild(btn);
 }
 
 renderStep();
