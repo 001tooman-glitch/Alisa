@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивный Квест: Алекс и Алиса</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        #game-container { max-width: 1100px; width: 100%; background: #1e1e1e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; }
-        #progress-container { width: 100%; background-color: #333; border-radius: 20px; margin-bottom: 20px; overflow: hidden; }
-        #progress-bar { width: 50%; height: 20px; background: linear-gradient(90deg, #ff4081, #ff80ab); text-align: center; line-height: 20px; color: white; font-weight: bold; font-size: 13px; transition: width 0.5s ease; }
-        #status-bar { display: flex; justify-content: space-between; font-size: 16px; color: #fff; margin-bottom: 20px; font-weight: bold; }
-        #main-layout { display: flex; gap: 25px; width: 100%; }
-        #left-column { flex: 1.2; min-width: 0; }
-        #right-column { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; }
-        #media-box { width: 100%; height: 500px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        #game-image, #game-video { width: 100%; height: 100%; object-fit: contain; background: #111; }
-        #dialogue-text { font-size: 19px; line-height: 1.6; margin-bottom: 20px; background: #252525; padding: 15px; border-radius: 8px; border-left: 4px solid #ff4081; min-height: 100px; }
-        .btn { display: block; width: 100%; background: #2c2c2c; color: #fff; border: 1px solid #444; padding: 14px; margin-bottom: 12px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 16px; transition: all 0.2s; }
-        .btn:hover { background: #3a3a3a; border-color: #ff4081; transform: translateX(3px); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Интерактивный Квест: Алекс и Алиса</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+#game-container { max-width: 1100px; width: 100%; background: #1e1e1e; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; }
+#progress-container { width: 100%; background-color: #333; border-radius: 20px; margin-bottom: 20px; overflow: hidden; }
+#progress-bar { width: 50%; height: 20px; background: linear-gradient(90deg, #ff4081, #ff80ab); text-align: center; line-height: 20px; color: white; font-weight: bold; font-size: 13px; transition: width 0.5s ease; }
+#status-bar { display: flex; justify-content: space-between; font-size: 16px; color: #fff; margin-bottom: 20px; font-weight: bold; }
+#main-layout { display: flex; gap: 25px; width: 100%; }
+#left-column { flex: 1.2; min-width: 0; }
+#right-column { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; }
+#media-box { width: 100%; height: 500px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+#game-image, #game-video { width: 100%; height: 100%; object-fit: contain; background: #111; }
+#dialogue-text { font-size: 19px; line-height: 1.6; margin-bottom: 20px; background: #252525; padding: 15px; border-radius: 8px; border-left: 4px solid #ff4081; min-height: 100px; }
+.btn { display: block; width: 100%; background: #2c2c2c; color: #fff; border: 1px solid #444; padding: 14px; margin-bottom: 12px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 16px; transition: all 0.2s; }
+.btn:hover { background: #3a3a3a; border-color: #ff4081; transform: translateX(3px); }
+</style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="progress-container">
-        <div id="progress-bar">Симпатия: 50%</div>
-    </div>
-    <div id="status-bar">
-        <span id="location-display">📍 Локация: Парк</span>
-    </div>
-    <div id="main-layout">
-        <div id="left-column">
-            <div id="media-box">
-                <img id="game-image" src="image 1.jpg" alt="Алиса">
-                <video id="game-video" style="display:none;"></video>
-            </div>
-        </div>
-        <div id="right-column">
-            <div id="dialogue-text">Загрузка игры...</div>
-            <div id="options-box"></div>
-        </div>
-    </div>
+<div id="progress-container">
+<div id="progress-bar">Симпатия: 50%</div>
+</div>
+<div id="status-bar">
+<span id="location-display">📍 Локация: Park</span>
+</div>
+<div id="main-layout">
+<div id="left-column">
+<div id="media-box">
+<img id="game-image" src="image 1.jpg" alt="Алиса">
+<video id="game-video" style="display:none;"></video>
+</div>
+</div>
+<div id="right-column">
+<div id="dialogue-text">Загрузка игры...</div>
+<div id="options-box"></div>
+</div>
+</div>
 </div>
 
 <script src="script.js"></script>
@@ -57,68 +57,68 @@ const locationElement = document.getElementById('location-display');
 const progressBar = document.getElementById('progress-bar');
 
 function playVideo(videoName, callback = null) {
-    imgElement.style.display = 'none';
-    videoElement.style.display = 'block';
-    videoElement.src = videoName;
-    videoElement.loop = false;
-    videoElement.play().catch(e => console.log("Ожидание клика"));
-    videoElement.onended = () => { if (callback) callback(); };
+imgElement.style.display = 'none';
+videoElement.style.display = 'block';
+videoElement.src = videoName;
+videoElement.loop = false;
+videoElement.play().catch(e => console.log("Ожидание клика"));
+videoElement.onended = () => { if (callback) callback(); };
 }
 
 function updateMedia() {
-    if (simPercent <= 35) {
-        playVideo("Refusal.mp4", () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
-        return;
-    }
-    playVideo(getEmotionVideo(simPercent, 1));
+if (simPercent <= 35) {
+playVideo("Refusal.mp4", () => { triggerGameOver("Алиса оборвала разговор и ушла."); });
+return;
+}
+playVideo(getEmotionVideo(simPercent, 1));
 }
 
 function renderStep() {
-    let displayPercentage = Math.max(0, Math.min(100, simPercent));
-    progressBar.style.width = displayPercentage + '%';
-    progressBar.innerText = `Симпатия: ${displayPercentage}%`;
+let displayPercentage = Math.max(0, Math.min(100, simPercent));
+progressBar.style.width = displayPercentage + '%';
+progressBar.innerText = `Симпатия: ${displayPercentage}%`;
 
-    optionsElement.innerHTML = "";
+optionsElement.innerHTML = "";
 
-    // Финал первой части (после 10 раундов)
-    if (currentIndex === 5) {
-        if (simPercent >= 65) {
-            textElement.innerHTML = "<strong>Успех Первой части!</strong> Алиса соглашается пойти с вами на ужин. Конец ознакомительного эпизода.";
-            playVideo("Agreement.mp4");
-        } else {
-            triggerGameOver("Симпатии недостаточно для продолжения свидания.");
-        }
-        return;
-    }
+// Финал первой части наступает строго после завершения 5-го раунда (индекс 5)
+if (currentIndex === 5) {
+if (simPercent >= 65) {
+textElement.innerHTML = "<strong>Успех знакомства!</strong> Алиса соглашается пойти с вами на ужин. Конец первой части квеста.";
+playVideo("Agreement.mp4");
+} else {
+triggerGameOver("Симпатии недостаточно для продолжения свидания.");
+}
+return;
+}
 
-    let currentStep = scriptData[currentIndex];
-    let activeSide = isAlisaTurn ? currentStep.alisa : currentStep.alex;
-    textElement.innerHTML = activeSide.text;
+let currentStep = scriptData[currentIndex];
+let activeSide = isAlisaTurn ? currentStep.alisa : currentStep.alex;
+textElement.innerHTML = activeSide.text;
 
-    activeSide.options.forEach(opt => {
-        let button = document.createElement('button');
-        button.className = 'btn';
-        button.innerHTML = opt.text;
-        button.onclick = () => {
-            simPercent += opt.points;
-            textElement.innerHTML = opt.reply;
-            
-            isAlisaTurn = !isAlisaTurn;
-            if (!isAlisaTurn) currentIndex++; 
-            
-            updateMedia();
-            optionsElement.innerHTML = ""; 
-            setTimeout(renderStep, 4000);
-        };
-        optionsElement.appendChild(button);
-    });
+activeSide.options.forEach(opt => {
+let button = document.createElement('button');
+button.className = 'btn';
+button.innerHTML = opt.text;
+button.onclick = () => {
+simPercent += opt.points;
+textElement.innerHTML = opt.reply;
+
+isAlisaTurn = !isAlisaTurn;
+if (!isAlisaTurn) currentIndex++; 
+
+updateMedia();
+optionsElement.innerHTML = ""; 
+setTimeout(renderStep, 4000);
+};
+optionsElement.appendChild(button);
+});
 }
 
 function triggerGameOver(msg) {
-    optionsElement.innerHTML = "";
-    textElement.innerHTML = `<strong>Конец игры:</strong> ${msg}`;
-    let btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = "Заново";
-    btn.onclick = () => { location.reload(); }; optionsElement.appendChild(btn);
+optionsElement.innerHTML = "";
+textElement.innerHTML = `<strong>Конец игры:</strong> ${msg}`;
+let btn = document.createElement('button'); btn.className = 'btn'; btn.innerText = "Заново";
+btn.onclick = () => { location.reload(); }; optionsElement.appendChild(btn);
 }
 
 renderStep();
